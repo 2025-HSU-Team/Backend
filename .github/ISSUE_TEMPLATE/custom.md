@@ -7,15 +7,6 @@ assignees: ''
 
 ---
 
----
-name: common_issue_template.md
-about: 기본 이슈 템플릿
-title: ''
-labels: ''
-assignees: ''
-
----
-
 ## ✅ Issue 타입
 <!--
 하나 이상의 Issue 타입을 선택해주세요
