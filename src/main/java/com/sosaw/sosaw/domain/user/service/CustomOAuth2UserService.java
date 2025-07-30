@@ -1,6 +1,6 @@
 package com.sosaw.sosaw.domain.user.service;
 
-import com.sosaw.sosaw.domain.user.entity.SocialType;
+import com.sosaw.sosaw.domain.user.enums.SocialType;
 import com.sosaw.sosaw.domain.user.entity.User;
 import com.sosaw.sosaw.domain.user.repository.UserRepository;
 import com.sosaw.sosaw.global.jwt.JwtTokenProvider;

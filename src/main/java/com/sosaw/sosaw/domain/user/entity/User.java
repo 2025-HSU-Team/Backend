@@ -1,5 +1,6 @@
 package com.sosaw.sosaw.domain.user.entity;
 
+import com.sosaw.sosaw.domain.user.enums.SocialType;
 import com.sosaw.sosaw.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
