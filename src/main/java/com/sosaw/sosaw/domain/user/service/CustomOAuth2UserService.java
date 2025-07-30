@@ -1,5 +1,6 @@
 package com.sosaw.sosaw.domain.user.service;
 
+import com.sosaw.sosaw.domain.user.enums.Role;
 import com.sosaw.sosaw.domain.user.enums.SocialType;
 import com.sosaw.sosaw.domain.user.entity.User;
 import com.sosaw.sosaw.domain.user.repository.UserRepository;
@@ -49,7 +50,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                             .email(email)
                             .socialType(SocialType.KAKAO)
                             .socialId(kakaoId)
-                            .role("ROLE_USER")
+                            .role(Role.USER)
                             .build());
                 });
 
@@ -65,7 +66,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         // 7. Spring Security 인증용 객체 반환
         return new DefaultOAuth2User(
-                Collections.singleton(new SimpleGrantedAuthority(user.getRole())),
+                Collections.singleton(new SimpleGrantedAuthority(user.getRole().name())),
                 customAttributes,
                 "socialId" // getName()으로 쓸 식별자 key (Spring 내부용)
         );

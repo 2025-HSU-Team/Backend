@@ -24,7 +24,7 @@ public class CustomUserDetails implements UserDetails {
     // 사용자 권한 목록 반환 -> Spring Security는 여기 있는 권한(role)을 보고 URL 접근 허용/차단 판단함
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(user.getRole()));
+        return List.of(new SimpleGrantedAuthority(user.getRole().name()));
     }
 
     @Override
