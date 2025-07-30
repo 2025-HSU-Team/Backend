@@ -1,5 +1,8 @@
 package com.sosaw.sosaw.global.exception;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sosaw.sosaw.domain.user.exception.UserErrorCode;
+import com.sosaw.sosaw.global.response.BaseResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.AuthenticationException;
@@ -18,12 +21,8 @@ public class CustomAuthenticationEntryPointHandler implements AuthenticationEntr
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json;charset=UTF-8");
 
-        String body = """
-            {
-              "status": 401,
-              "message": "인증이 필요합니다."
-            }
-            """;
+        BaseResponse errorResponse = BaseResponse.of(UserErrorCode.NEED_LOGIN_401);
+        String body = new ObjectMapper().writeValueAsString(errorResponse);
 
         response.getWriter().write(body);
     }

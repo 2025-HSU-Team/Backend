@@ -31,4 +31,8 @@ public class BaseResponse {
     public static BaseResponse of(Boolean isSuccess, String code, String message) {
         return new BaseResponse(isSuccess, code, message);
     }
+
+    public static BaseResponse of(BaseResponseCode baseResponseCode) {
+        return new BaseResponse(false, baseResponseCode.getCode(), baseResponseCode.getMessage());
+    }
 }
