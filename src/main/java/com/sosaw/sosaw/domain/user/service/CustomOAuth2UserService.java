@@ -44,15 +44,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         // 4. DB에 해당 소셜 ID로 가입된 유저가 있는지 확인
         User user = userRepository.findBySocialId(kakaoId)
-                .orElseGet(() -> {
-                    // 없으면 새로 생성
-                    return userRepository.save(User.builder()
-                            .email(email)
-                            .socialType(SocialType.KAKAO)
-                            .socialId(kakaoId)
-                            .role(Role.USER)
-                            .build());
-                });
+                .orElseGet(() -> userRepository.save(User.createKakaoUser(email, kakaoId)));
 
         // 5. JWT 토큰 발급
         String jwt = jwtTokenProvider.createToken(user);

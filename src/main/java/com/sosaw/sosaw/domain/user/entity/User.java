@@ -27,4 +27,13 @@ public class User extends BaseEntity {
     private SocialType socialType; // KAKAO
 
     private String socialId; // 플랫폼마다의 고유 ID값
+
+    public static User createKakaoUser(String email, String kakaoId) {
+        return User.builder()
+                .email(email)
+                .socialType(SocialType.KAKAO)
+                .socialId(kakaoId)
+                .role(Role.USER)
+                .build();
+    }
 }
