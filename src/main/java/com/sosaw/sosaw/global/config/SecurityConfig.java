@@ -50,6 +50,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/users/profile").hasRole("ADMIN") // ADMIN 역할 가진 사용자만 접근 가능
                         .requestMatchers("kakao-login-test.html").permitAll()
                         .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
+                        .requestMatchers("/static/js/**","/static/css/**","/static/img/**"
+                                ,"/swagger-ui/**","/v3/api-docs/**").permitAll() // swagger
                         .anyRequest().authenticated() // 로그인한 사용자만 접근 허용
                 )
 
