@@ -20,9 +20,10 @@ public class CustomSound extends BaseEntity {
     @Column(name="custom_id")
     private Long id;
 
-    @Column(name="custom_name")
+    @Column(name="custom_name", nullable = false)
     private String customName;
 
+    @Column(nullable = false)
     private String emoji;
 
     @Column(name = "mfcc", columnDefinition = "vector(13)", nullable = false)
