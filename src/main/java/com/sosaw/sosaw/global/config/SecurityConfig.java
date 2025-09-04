@@ -46,7 +46,7 @@ public class SecurityConfig {
 
                 // 인가 정책 설정
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/users/signup", "/api/users/signin").permitAll() //누구나 접근 가능
+                        .requestMatchers("/api/users/signup", "/api/users/signin","/api/sound/upload").permitAll() //누구나 접근 가능
                         .requestMatchers("/api/users/profile").hasRole("ADMIN") // ADMIN 역할 가진 사용자만 접근 가능
                         .requestMatchers("kakao-login-test.html").permitAll()
                         .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
