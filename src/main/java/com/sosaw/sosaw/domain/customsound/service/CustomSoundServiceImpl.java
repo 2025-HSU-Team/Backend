@@ -6,9 +6,11 @@ import com.sosaw.sosaw.domain.customsound.exception.NotFoundSoundException;
 import com.sosaw.sosaw.domain.customsound.exception.UnsupportedExtensionException;
 import com.sosaw.sosaw.domain.customsound.repository.CustomSoundRepository;
 import com.sosaw.sosaw.domain.customsound.web.dto.SoundUploadReq;
+import com.sosaw.sosaw.domain.customsound.web.dto.SoundsRes;
 import com.sosaw.sosaw.domain.user.entity.User;
 import com.sosaw.sosaw.global.integration.fastapi.PythonMFCCService;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -77,6 +79,12 @@ public class CustomSoundServiceImpl implements CustomSoundService{
                 customSoundRepository::delete,
                 () -> { throw new NotFoundSoundException(); }
         );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<SoundsRes> getAllSounds(User user) {
+        return customSoundRepository.findAllByUserId(user.getUserId());
     }
 
     // 임시 파일 삭제 메소드
