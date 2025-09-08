@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 public class CustomSoundController {
     private final CustomSoundService customSoundService;
 
-    // 사용자 소리 추가
+    // 내 소리 추가
     @PostMapping("/upload")
     public ResponseEntity<SuccessResponse<?>> upload(
             @AuthenticationPrincipal CustomUserDetails userDetails,
@@ -26,5 +26,15 @@ public class CustomSoundController {
         customSoundService.upload(req, userDetails.getUser());
         return ResponseEntity.status(HttpStatus.CREATED).body(SuccessResponse.created(null));
     }
+
+    // 내 소리 삭제
+    @DeleteMapping("/delete")
+    public ResponseEntity<SuccessResponse<?>> delete(
+            @RequestParam Long customSoundId
+    ){
+        customSoundService.delete(customSoundId);
+        return ResponseEntity.status(HttpStatus.OK).body(SuccessResponse.ok(null));
+    }
+
 }
 

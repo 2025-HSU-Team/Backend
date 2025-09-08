@@ -2,6 +2,7 @@ package com.sosaw.sosaw.domain.customsound.service;
 
 import com.sosaw.sosaw.domain.customsound.entity.CustomSound;
 import com.sosaw.sosaw.domain.customsound.exception.FileProcessFailedException;
+import com.sosaw.sosaw.domain.customsound.exception.NotFoundSoundException;
 import com.sosaw.sosaw.domain.customsound.exception.UnsupportedExtensionException;
 import com.sosaw.sosaw.domain.customsound.repository.CustomSoundRepository;
 import com.sosaw.sosaw.domain.customsound.web.dto.SoundUploadReq;
@@ -67,6 +68,15 @@ public class CustomSoundServiceImpl implements CustomSoundService{
             safeDelete(saved);
             safeDelete(tempDir);
         }
+    }
+
+    @Override
+    @Transactional
+    public void delete(Long customSoundId) {
+        customSoundRepository.findById(customSoundId).ifPresentOrElse(
+                customSoundRepository::delete,
+                () -> { throw new NotFoundSoundException(); }
+        );
     }
 
     // 임시 파일 삭제 메소드
