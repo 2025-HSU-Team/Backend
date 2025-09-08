@@ -5,4 +5,6 @@ import com.sosaw.sosaw.domain.user.entity.User;
 
 public interface CustomSoundService {
     void upload(SoundUploadReq req, User user);
+
+    void delete(Long customSoundId);
 }
