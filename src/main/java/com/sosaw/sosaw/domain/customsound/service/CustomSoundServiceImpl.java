@@ -5,6 +5,7 @@ import com.sosaw.sosaw.domain.customsound.exception.FileProcessFailedException;
 import com.sosaw.sosaw.domain.customsound.exception.UnsupportedExtensionException;
 import com.sosaw.sosaw.domain.customsound.repository.CustomSoundRepository;
 import com.sosaw.sosaw.domain.customsound.web.dto.SoundUploadReq;
+import com.sosaw.sosaw.domain.user.entity.User;
 import com.sosaw.sosaw.global.integration.fastapi.PythonMFCCService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,7 @@ public class CustomSoundServiceImpl implements CustomSoundService{
 
     @Override
     @Transactional
-    public void upload(SoundUploadReq req) {
+    public void upload(SoundUploadReq req, User user) {
         MultipartFile file = req.getFile();
 
         // 1) 검증
@@ -56,7 +57,7 @@ public class CustomSoundServiceImpl implements CustomSoundService{
                 mfcc[i] = vector.get(i).floatValue();
             }
 
-            CustomSound sound = CustomSound.toEntity(req, mfcc);
+            CustomSound sound = CustomSound.toEntity(user, req, mfcc);
             customSoundRepository.save(sound);
 
         } catch (IOException e) {
