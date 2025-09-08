@@ -1,6 +1,8 @@
 package com.sosaw.sosaw.domain.customsound.entity;
 
+import com.sosaw.sosaw.domain.customsound.entity.enums.Color;
 import com.sosaw.sosaw.domain.customsound.web.dto.SoundUploadReq;
+import com.sosaw.sosaw.domain.user.entity.User;
 import com.sosaw.sosaw.global.entity.BaseEntity;
 import com.sosaw.sosaw.global.jpa.converter.FloatArrayVectorConverter;
 import jakarta.persistence.*;
@@ -26,16 +28,26 @@ public class CustomSound extends BaseEntity {
     @Column(nullable = false)
     private String emoji;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Color color;
+
     @Column(name = "mfcc", columnDefinition = "vector(13)", nullable = false)
     @Convert(converter = FloatArrayVectorConverter.class)
     @JdbcTypeCode(SqlTypes.OTHER)
     private float[] mfcc;
 
-    public static CustomSound toEntity(SoundUploadReq req, float[] mfcc){
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    public static CustomSound toEntity(User user, SoundUploadReq req, float[] mfcc){
         return CustomSound.builder()
                 .customName(req.getCustomName())
                 .emoji(req.getEmoji())
+                .color(req.getColor())
                 .mfcc(mfcc)
+                .user(user)
                 .build();
     }
 }
