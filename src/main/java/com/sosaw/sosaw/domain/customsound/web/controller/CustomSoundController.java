@@ -2,6 +2,7 @@ package com.sosaw.sosaw.domain.customsound.web.controller;
 
 import com.sosaw.sosaw.domain.customsound.service.CustomSoundService;
 import com.sosaw.sosaw.domain.customsound.web.dto.SoundUploadReq;
+import com.sosaw.sosaw.domain.customsound.web.dto.SoundsRes;
 import com.sosaw.sosaw.domain.user.entity.User;
 import com.sosaw.sosaw.global.response.SuccessResponse;
 import com.sosaw.sosaw.global.security.CustomUserDetails;
@@ -11,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,6 +37,15 @@ public class CustomSoundController {
     ){
         customSoundService.delete(customSoundId);
         return ResponseEntity.status(HttpStatus.OK).body(SuccessResponse.ok(null));
+    }
+
+    // 내 소리 조회
+    @GetMapping("")
+    public ResponseEntity<SuccessResponse<List<SoundsRes>>> getAllSounds(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ){
+        List<SoundsRes> res = customSoundService.getAllSounds(userDetails.getUser());
+        return ResponseEntity.status(HttpStatus.OK).body(SuccessResponse.ok(res));
     }
 
 }
