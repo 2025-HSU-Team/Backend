@@ -50,6 +50,13 @@ public class CustomSound extends BaseEntity {
                 .user(user)
                 .build();
     }
+
+    public void replace(SoundUploadReq req, float[] mfcc){
+        this.customName = req.getCustomName();
+        this.emoji = req.getEmoji();
+        this.color = req.getColor();
+        this.mfcc = mfcc;
+    }
 }
 
 
