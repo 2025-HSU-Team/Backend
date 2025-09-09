@@ -48,5 +48,15 @@ public class CustomSoundController {
         return ResponseEntity.status(HttpStatus.OK).body(SuccessResponse.ok(res));
     }
 
+    // 내 소리 수정
+    @PutMapping("/modify/{customSoundId}")
+    public ResponseEntity<SuccessResponse<?>> modify(
+            @PathVariable("customSoundId") Long customSoundId,
+            @ModelAttribute @Valid SoundUploadReq req
+    ){
+        customSoundService.modify(req, customSoundId);
+        return ResponseEntity.status(HttpStatus.OK).body(SuccessResponse.ok(null));
+    }
+
 }
 
