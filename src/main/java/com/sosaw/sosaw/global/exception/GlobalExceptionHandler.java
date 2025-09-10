@@ -8,6 +8,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -91,6 +92,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse<?>> handleBaseException(BaseException e) {
         log.error("BaseException : {}", e.getBaseResponseCode().getMessage(), e);
         ErrorResponse<?> errorResponse = ErrorResponse.from(e.getBaseResponseCode());
+        return ResponseEntity.status(errorResponse.getHttpStatus()).body(errorResponse);
+    }
+
+    // @RequestParam 누락 시 발생
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ErrorResponse<?>> handleMissingRequestParam(MissingServletRequestParameterException e) {
+        log.error("MissingServletRequestParameterException : {}", e.getMessage(), e);
+        ErrorResponse<?> errorResponse = ErrorResponse.of(ErrorResponseCode.INVALID_HTTP_MESSAGE_PARAMETER, e.getParameterName() + " 값은 필수입니다.");
         return ResponseEntity.status(errorResponse.getHttpStatus()).body(errorResponse);
     }
 
