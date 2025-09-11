@@ -8,6 +8,8 @@ import com.sosaw.sosaw.domain.customsound.port.AudioFeatureExtractor;
 import com.sosaw.sosaw.domain.customsound.repository.CustomSoundRepository;
 import com.sosaw.sosaw.domain.customsound.web.dto.SoundUploadReq;
 import com.sosaw.sosaw.domain.customsound.web.dto.SoundsRes;
+import com.sosaw.sosaw.domain.soundsetting.entity.SoundSetting;
+import com.sosaw.sosaw.domain.soundsetting.entity.enums.SoundKind;
 import com.sosaw.sosaw.domain.user.entity.User;
 import com.sosaw.sosaw.global.integration.fastapi.PythonMFCCService;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +39,15 @@ public class CustomSoundServiceImpl implements CustomSoundService{
     public void upload(SoundUploadReq req, User user) {
         float[] mfcc = audioFeatureExtractor.extractMfcc(req.getFile());
         CustomSound sound = CustomSound.toEntity(user, req, mfcc);
+
+        // 커스텀 소리를 생성할때, SoundSetting 부분도 같이 생기게 함
+        SoundSetting setting = SoundSetting.builder()
+                .alarmEnabled(false)   // 기본값
+                .vibrationLevel(1)     // 기본값
+                .soundKind(SoundKind.CUSTOM)
+                .build();
+        sound.setSoundSetting(setting);
+
         customSoundRepository.save(sound);
     }
 

@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CustomSoundRepository extends JpaRepository<CustomSound, Long> {
@@ -20,4 +21,7 @@ public interface CustomSoundRepository extends JpaRepository<CustomSound, Long> 
     where c.user.userId = :userId
     """)
     List<SoundsRes> findAllByUserId(@Param("userId") Long userId);
+
+    // 특정 유저의 커스텀 소리만 조회
+    Optional<CustomSound> findByIdAndUserUserId(Long id, Long userId);
 }
