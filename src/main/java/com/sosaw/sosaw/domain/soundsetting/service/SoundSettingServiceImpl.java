@@ -4,7 +4,6 @@ import com.sosaw.sosaw.domain.soundsetting.exception.NotFoundCustomSoundExceptio
 import com.sosaw.sosaw.domain.customsound.entity.CustomSound;
 import com.sosaw.sosaw.domain.customsound.repository.CustomSoundRepository;
 import com.sosaw.sosaw.domain.soundsetting.entity.SoundSetting;
-import com.sosaw.sosaw.domain.soundsetting.exception.UnsupportedSoundTypeException;
 import com.sosaw.sosaw.domain.soundsetting.repository.SoundSettingRepository;
 import com.sosaw.sosaw.domain.soundsetting.web.dto.SoundAlarmUpdateReq;
 import com.sosaw.sosaw.domain.user.entity.User;
