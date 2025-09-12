@@ -58,6 +58,8 @@ public class SoundSetting extends BaseEntity {
         this.alarmEnabled = enabled;
     }
 
+    public void changeVibrationType(int vibrationLevel) { this.vibrationLevel = vibrationLevel; }
+
     public static SoundSetting createForCustom(CustomSound customSound) {
         SoundSetting setting = SoundSetting.builder()
                 .alarmEnabled(false)    // 기본값
