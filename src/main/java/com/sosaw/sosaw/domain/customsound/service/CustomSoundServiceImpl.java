@@ -41,12 +41,7 @@ public class CustomSoundServiceImpl implements CustomSoundService{
         CustomSound sound = CustomSound.toEntity(user, req, mfcc);
 
         // 커스텀 소리를 생성할때, SoundSetting 부분도 같이 생기게 함
-        SoundSetting setting = SoundSetting.builder()
-                .alarmEnabled(false)   // 기본값
-                .vibrationLevel(1)     // 기본값
-                .soundKind(SoundKind.CUSTOM)
-                .build();
-        sound.setSoundSetting(setting);
+        SoundSetting.createForCustom(sound);
 
         customSoundRepository.save(sound);
     }

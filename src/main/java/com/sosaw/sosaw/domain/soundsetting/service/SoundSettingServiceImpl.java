@@ -9,6 +9,7 @@ import com.sosaw.sosaw.domain.soundsetting.web.dto.SoundAlarmUpdateReq;
 import com.sosaw.sosaw.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +19,7 @@ public class SoundSettingServiceImpl implements SoundSettingService {
     private final SoundSettingRepository soundSettingRepository;
 
     @Override
+    @Transactional
     public void updateAlarm(User user, SoundAlarmUpdateReq req) {
         switch (req.getSoundKind()) {
             case CUSTOM -> updateCustomAlarm(user, req);
@@ -26,6 +28,7 @@ public class SoundSettingServiceImpl implements SoundSettingService {
     }
 
     @Override
+    @Transactional
     public void updateCustomAlarm(User user, SoundAlarmUpdateReq req) {
         // 1) 내 커스텀 사운드인지 검증
         CustomSound customSound = customSoundRepository
@@ -35,15 +38,7 @@ public class SoundSettingServiceImpl implements SoundSettingService {
         // 2) 설정 조회 or 생성
         SoundSetting setting = soundSettingRepository
                 .findByCustomSoundId(customSound.getId())
-                .orElseGet(() -> {
-                    SoundSetting s = SoundSetting.builder()
-                            .customSound(customSound)
-                            .alarmEnabled(false) // 기본값
-                            .vibrationLevel(1)   // 기본값
-                            .build();
-                    customSound.setSoundSetting(s); // 양방향 세팅
-                    return s;
-                });
+                .orElseGet(() -> SoundSetting.createForCustom(customSound));
 
         // 3) 알람 유무 반영
         setting.changeAlarmEnabled(req.isAlarmEnabled());

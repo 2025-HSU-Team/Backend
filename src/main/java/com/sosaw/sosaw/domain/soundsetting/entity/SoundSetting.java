@@ -2,7 +2,6 @@ package com.sosaw.sosaw.domain.soundsetting.entity;
 
 import com.sosaw.sosaw.domain.customsound.entity.CustomSound;
 import com.sosaw.sosaw.domain.soundsetting.entity.enums.SoundKind;
-import com.sosaw.sosaw.domain.soundsetting.web.dto.SoundAlarmUpdateReq;
 import com.sosaw.sosaw.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -41,12 +40,31 @@ public class SoundSetting extends BaseEntity {
     @Column(nullable = false)
     private SoundKind soundKind;
 
-
     public void setCustomSound(CustomSound customSound) {
         this.customSound = customSound;
+
+        // 양방향 동기화
+        if (customSound != null && customSound.getSoundSetting() != this) {
+            customSound.setSoundSetting(this);
+        }
+
+        // 커스텀 연관이면 KIND는 CUSTOM
+        if (this.soundKind == null || this.soundKind != SoundKind.CUSTOM) {
+            this.soundKind = SoundKind.CUSTOM;
+        }
     }
 
     public void changeAlarmEnabled(boolean enabled) {
         this.alarmEnabled = enabled;
+    }
+
+    public static SoundSetting createForCustom(CustomSound customSound) {
+        SoundSetting setting = SoundSetting.builder()
+                .alarmEnabled(false)    // 기본값
+                .vibrationLevel(1)      // 기본값
+                .soundKind(SoundKind.CUSTOM)
+                .build();
+        setting.setCustomSound(customSound); // 양방향 세팅
+        return setting;
     }
 }
