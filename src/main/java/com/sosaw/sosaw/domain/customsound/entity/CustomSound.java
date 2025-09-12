@@ -2,6 +2,7 @@ package com.sosaw.sosaw.domain.customsound.entity;
 
 import com.sosaw.sosaw.domain.customsound.entity.enums.Color;
 import com.sosaw.sosaw.domain.customsound.web.dto.SoundUploadReq;
+import com.sosaw.sosaw.domain.soundsetting.entity.SoundSetting;
 import com.sosaw.sosaw.domain.user.entity.User;
 import com.sosaw.sosaw.global.entity.BaseEntity;
 import com.sosaw.sosaw.global.jpa.converter.FloatArrayVectorConverter;
@@ -41,6 +42,10 @@ public class CustomSound extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    // 알람, 진동
+    @OneToOne(mappedBy = "customSound", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private SoundSetting soundSetting;
+
     public static CustomSound toEntity(User user, SoundUploadReq req, float[] mfcc){
         return CustomSound.builder()
                 .customName(req.getCustomName())
@@ -56,6 +61,11 @@ public class CustomSound extends BaseEntity {
         this.emoji = req.getEmoji();
         this.color = req.getColor();
         this.mfcc = mfcc;
+    }
+
+    public void setSoundSetting(SoundSetting soundSetting) {
+        this.soundSetting = soundSetting;
+        soundSetting.setCustomSound(this);
     }
 }
 
