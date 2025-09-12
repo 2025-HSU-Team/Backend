@@ -19,7 +19,7 @@ public class SoundSettingServiceImpl implements SoundSettingService {
 
     @Override
     public void updateAlarm(User user, SoundAlarmUpdateReq req) {
-        switch (req.getSoundType()) {
+        switch (req.getSoundKind()) {
             case CUSTOM -> updateCustomAlarm(user, req);
             case DEFAULT -> updateDefaultAlarm(user, req); // 기본 사운드 구현 시 작성
         }
