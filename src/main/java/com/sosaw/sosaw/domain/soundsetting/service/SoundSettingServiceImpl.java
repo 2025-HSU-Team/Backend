@@ -1,6 +1,6 @@
 package com.sosaw.sosaw.domain.soundsetting.service;
 
-import com.sosaw.sosaw.domain.soundsetting.exception.NotFoundCustomSoundException;
+import com.sosaw.sosaw.domain.customsound.exception.NotFoundSoundException;
 import com.sosaw.sosaw.domain.customsound.entity.CustomSound;
 import com.sosaw.sosaw.domain.customsound.repository.CustomSoundRepository;
 import com.sosaw.sosaw.domain.soundsetting.entity.SoundSetting;
@@ -30,7 +30,7 @@ public class SoundSettingServiceImpl implements SoundSettingService {
         // 1) 내 커스텀 사운드인지 검증
         CustomSound customSound = customSoundRepository
                 .findByIdAndUserUserId(req.getSoundId(), user.getUserId())
-                .orElseThrow(NotFoundCustomSoundException::new);
+                .orElseThrow(NotFoundSoundException::new);
 
         // 2) 설정 조회 or 생성
         SoundSetting setting = soundSettingRepository
