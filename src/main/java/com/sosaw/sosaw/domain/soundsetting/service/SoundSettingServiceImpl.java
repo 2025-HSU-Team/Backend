@@ -23,7 +23,6 @@ public class SoundSettingServiceImpl implements SoundSettingService {
         switch (req.getSoundType()) {
             case CUSTOM -> updateCustomAlarm(user, req);
             case DEFAULT -> updateDefaultAlarm(user, req); // 기본 사운드 구현 시 작성
-            default -> throw new UnsupportedSoundTypeException();
         }
     }
 
