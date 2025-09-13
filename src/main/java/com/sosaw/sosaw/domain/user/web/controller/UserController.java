@@ -7,10 +7,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
@@ -19,9 +16,17 @@ public class UserController {
 
     private final UserService userService;
 
+    // 회원가입
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody @Valid SignUpReq signUpReq) {
         userService.signUp(signUpReq);
         return ResponseEntity.status(HttpStatus.CREATED).body(SuccessResponse.created(null));
+    }
+
+    // 아이디 중복 확인
+    @GetMapping("/signup/checkId")
+    public ResponseEntity<SuccessResponse<?>> checkIdDuplicate(@RequestParam("id") String id) {
+        boolean isDuplicate = userService.isLoginIdDuplicate(id);
+        return ResponseEntity.status(HttpStatus.OK).body(SuccessResponse.ok(isDuplicate));
     }
 }

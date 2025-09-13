@@ -33,6 +33,12 @@ public class UserServiceImpl implements UserService {
 
         // Repository에 User 저장
         userRepository.save(user);
+    }
 
+    // 회원가입시, 아이디 중복 확인
+    @Transactional(readOnly = true)
+    @Override
+    public boolean isLoginIdDuplicate(String loginId) {
+        return userRepository.existsByLoginId(loginId); // 중복이면 true, 중복 아니면 false
     }
 }
