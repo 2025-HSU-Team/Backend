@@ -2,7 +2,6 @@ package com.sosaw.sosaw.domain.user.entity;
 
 import com.sosaw.sosaw.domain.customsound.entity.CustomSound;
 import com.sosaw.sosaw.domain.user.enums.Role;
-import com.sosaw.sosaw.domain.user.enums.SocialType;
 import com.sosaw.sosaw.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -22,25 +21,23 @@ public class User extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
+    @Column(unique = true)
+    private String loginId; // 일반 로그인용 아이디
+
+    private String password; // 일반 로그인용 비밀번호
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
 
-    private String email; // 소셜 로그인용 이메일
-
-    @Enumerated(EnumType.STRING)
-    private SocialType socialType; // KAKAO
-
-    private String socialId; // 플랫폼마다의 고유 ID값
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CustomSound> customSounds = new ArrayList<>();
 
-    public static User createKakaoUser(String email, String kakaoId) {
+    // 일반 로그인용 빌더
+    public static User createNormalUser(String loginId, String encodedPassword) {
         return User.builder()
-                .email(email)
-                .socialType(SocialType.KAKAO)
-                .socialId(kakaoId)
+                .loginId(loginId)
+                .password(encodedPassword)
                 .role(Role.USER)
                 .build();
     }

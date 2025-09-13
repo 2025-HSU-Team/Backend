@@ -1,6 +1,5 @@
 package com.sosaw.sosaw.global.config;
 
-import com.sosaw.sosaw.domain.user.service.CustomOAuth2UserService;
 import com.sosaw.sosaw.global.exception.CustomAccessDeniedHandler;
 import com.sosaw.sosaw.global.exception.CustomAuthenticationEntryPointHandler;
 import com.sosaw.sosaw.global.jwt.JwtTokenFilter;
@@ -22,7 +21,6 @@ public class SecurityConfig {
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
     private final CustomAuthenticationEntryPointHandler customAuthenticationEntryPointHandler;
     private final JwtTokenFilter jwtTokenFilter;
-    private final CustomOAuth2UserService customOAuth2UserService;
 
     // 비밀번호를 DB에 암호화해서 저장할 때 사용하는 인코더
     @Bean
@@ -46,31 +44,11 @@ public class SecurityConfig {
 
                 // 인가 정책 설정
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/users/signup", "/api/users/signin","/api/sound/upload").permitAll() //누구나 접근 가능
+                        .requestMatchers("/api/users/signup", "/api/users/signin", "/api/users/signup/checkId","/api/sound/upload").permitAll() //누구나 접근 가능
                         .requestMatchers("/api/users/profile").hasRole("ADMIN") // ADMIN 역할 가진 사용자만 접근 가능
-                        .requestMatchers("kakao-login-test.html").permitAll()
-                        .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
                         .requestMatchers("/static/js/**","/static/css/**","/static/img/**"
                                 ,"/swagger-ui/**","/v3/api-docs/**").permitAll() // swagger
                         .anyRequest().authenticated() // 로그인한 사용자만 접근 허용
-                )
-
-                .oauth2Login(oauth2 -> oauth2
-                        .userInfoEndpoint(userInfo -> userInfo
-                                .userService(customOAuth2UserService) // 직접 만든 service
-                        )
-                        // 성공
-                        .successHandler((request, response, authentication) -> {
-                            OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-                            String jwt = (String) oAuth2User.getAttributes().get("jwt");
-                            response.sendRedirect("http://localhost:3000/oauth-success?token=" + jwt);
-                        })
-                        // 실패
-                        .failureHandler((request, response, exception) -> {
-                            System.out.println("소셜 로그인 실패 발생");
-                            exception.printStackTrace(); // 어떤 오류인지 출력
-                            response.sendRedirect("http://localhost:3000/oauth-fail");
-                        })
                 )
 
                 // Spring Security 기본 로그인 필터보다 앞에 우리가 만든 JwtTokenFilter를 실행함
