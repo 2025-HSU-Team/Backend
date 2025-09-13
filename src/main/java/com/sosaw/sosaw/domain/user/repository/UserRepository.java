@@ -9,5 +9,6 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findBySocialId(String socialId);
+    Optional<User> findByLoginId(String loginId);
     boolean existsByLoginId(String loginId); // 일반로그인 아이디 중복 확인용
 }

@@ -1,6 +1,8 @@
 package com.sosaw.sosaw.domain.user.web.controller;
 
 import com.sosaw.sosaw.domain.user.service.UserService;
+import com.sosaw.sosaw.domain.user.web.dto.SignInReq;
+import com.sosaw.sosaw.domain.user.web.dto.SignInRes;
 import com.sosaw.sosaw.domain.user.web.dto.SignUpReq;
 import com.sosaw.sosaw.global.response.SuccessResponse;
 import jakarta.validation.Valid;
@@ -28,5 +30,12 @@ public class UserController {
     public ResponseEntity<SuccessResponse<?>> checkIdDuplicate(@RequestParam("id") String id) {
         boolean isDuplicate = userService.isLoginIdDuplicate(id);
         return ResponseEntity.status(HttpStatus.OK).body(SuccessResponse.ok(isDuplicate));
+    }
+
+    // 로그인
+    @PostMapping("/signin")
+    public ResponseEntity<?> signIn(@RequestBody @Valid SignInReq signInReq) {
+        SignInRes signInRes = userService.signIn(signInReq);
+        return ResponseEntity.status(HttpStatus.OK).body(SuccessResponse.ok(signInRes));
     }
 }
