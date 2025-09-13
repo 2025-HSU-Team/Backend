@@ -22,6 +22,11 @@ public class User extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
+    @Column(unique = true)
+    private String loginId; // 일반 로그인용 아이디
+
+    private String password; // 일반 로그인용 비밀번호
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
@@ -41,6 +46,15 @@ public class User extends BaseEntity {
                 .email(email)
                 .socialType(SocialType.KAKAO)
                 .socialId(kakaoId)
+                .role(Role.USER)
+                .build();
+    }
+
+    // 일반 로그인용 빌더
+    public static User createNormalUser(String loginId, String encodedPassword) {
+        return User.builder()
+                .loginId(loginId)
+                .password(encodedPassword)
                 .role(Role.USER)
                 .build();
     }
