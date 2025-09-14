@@ -11,4 +11,8 @@ public interface SoundSettingRepository extends JpaRepository<SoundSetting, Long
 
     // CustomSound id로 SoundSetting 조회
     Optional<SoundSetting> findByCustomSoundId(Long customId);
+
+    Optional<SoundSetting> findByUserUserIdAndCustomSoundId(Long userId, Long customId);
+    Optional<SoundSetting> findByUserUserIdAndBasicSoundId(Long userId, Long basicId);
+
 }
