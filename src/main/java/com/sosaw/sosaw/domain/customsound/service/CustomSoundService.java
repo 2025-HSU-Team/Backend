@@ -1,9 +1,11 @@
 package com.sosaw.sosaw.domain.customsound.service;
 
+import com.sosaw.sosaw.domain.customsound.web.dto.SoundMatchRes;
 import com.sosaw.sosaw.domain.customsound.web.dto.SoundUploadReq;
 import com.sosaw.sosaw.domain.customsound.web.dto.SoundsRes;
 import com.sosaw.sosaw.domain.user.entity.User;
 import jakarta.validation.Valid;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -15,4 +17,6 @@ public interface CustomSoundService {
     List<SoundsRes> getAllSounds(User user);
 
     void modify(SoundUploadReq req, Long customSoundId);
+
+    SoundMatchRes match(User user, MultipartFile file);
 }
