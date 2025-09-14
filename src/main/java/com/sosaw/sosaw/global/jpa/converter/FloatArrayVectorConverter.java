@@ -34,7 +34,7 @@ public class FloatArrayVectorConverter implements AttributeConverter<float[], Ob
         return parseLiteral(val);
     }
 
-    private static String toLiteral(float[] a) {
+    public static String toLiteral(float[] a) {
         StringBuilder sb = new StringBuilder(a.length * 8 + 2);
         sb.append('[');
         for (int i = 0; i < a.length; i++) {

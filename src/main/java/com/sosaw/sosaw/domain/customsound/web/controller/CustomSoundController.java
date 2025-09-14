@@ -1,6 +1,7 @@
 package com.sosaw.sosaw.domain.customsound.web.controller;
 
 import com.sosaw.sosaw.domain.customsound.service.CustomSoundService;
+import com.sosaw.sosaw.domain.customsound.web.dto.SoundMatchRes;
 import com.sosaw.sosaw.domain.customsound.web.dto.SoundUploadReq;
 import com.sosaw.sosaw.domain.customsound.web.dto.SoundsRes;
 import com.sosaw.sosaw.domain.user.entity.User;
@@ -12,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -56,6 +58,16 @@ public class CustomSoundController {
     ){
         customSoundService.modify(req, customSoundId);
         return ResponseEntity.status(HttpStatus.OK).body(SuccessResponse.ok(null));
+    }
+
+    // 내 소리 탐지
+    @PostMapping("/match")
+    public ResponseEntity<SuccessResponse<SoundMatchRes>> match(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestParam("file") MultipartFile file
+    ){
+        SoundMatchRes res = customSoundService.match(userDetails.getUser(), file);
+        return ResponseEntity.status(HttpStatus.OK).body(SuccessResponse.ok(res));
     }
 
 }
