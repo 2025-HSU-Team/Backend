@@ -21,7 +21,7 @@ public class SoundSetting extends BaseEntity {
 
     // 알람 유무
     @Column(name = "alarm_enabled", nullable = false)
-    private boolean alarmEnabled=false;
+    private boolean alarmEnabled=true;
 
     // 진동 종류
     @Column(name = "vibration_level", nullable = false)
@@ -62,7 +62,7 @@ public class SoundSetting extends BaseEntity {
 
     public static SoundSetting createForCustom(CustomSound customSound) {
         SoundSetting setting = SoundSetting.builder()
-                .alarmEnabled(false)    // 기본값
+                .alarmEnabled(true)    // 기본값
                 .vibrationLevel(1)      // 기본값
                 .soundKind(SoundKind.CUSTOM)
                 .build();
