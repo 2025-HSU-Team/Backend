@@ -1,5 +1,7 @@
 package com.sosaw.sosaw.domain.soundsetting.service;
 
+import com.sosaw.sosaw.domain.basicsound.entity.BasicSound;
+import com.sosaw.sosaw.domain.basicsound.repository.BasicSoundRepository;
 import com.sosaw.sosaw.domain.customsound.exception.NotFoundSoundException;
 import com.sosaw.sosaw.domain.customsound.entity.CustomSound;
 import com.sosaw.sosaw.domain.customsound.repository.CustomSoundRepository;
@@ -16,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class SoundSettingServiceImpl implements SoundSettingService {
 
+    private final BasicSoundRepository basicSoundRepository;
     private final CustomSoundRepository customSoundRepository;
     private final SoundSettingRepository soundSettingRepository;
 
@@ -48,7 +51,7 @@ public class SoundSettingServiceImpl implements SoundSettingService {
         // 2) 설정 조회 or 생성
         SoundSetting setting = soundSettingRepository
                 .findByCustomSoundId(customSound.getId())
-                .orElseGet(() -> SoundSetting.createForCustom(customSound));
+                .orElseGet(() -> SoundSetting.createForCustom(user, customSound));
 
         // 3) 알람 유무 반영
         setting.changeAlarmEnabled(req.isAlarmEnabled());
@@ -68,7 +71,7 @@ public class SoundSettingServiceImpl implements SoundSettingService {
         // 2) 설정 조회 or 생성
         SoundSetting setting = soundSettingRepository
                 .findByCustomSoundId(customSound.getId())
-                .orElseGet(() -> SoundSetting.createForCustom(customSound));
+                .orElseGet(() -> SoundSetting.createForCustom(user, customSound));
 
         // 3) 진동 종류 반영 (1~5)
         setting.changeVibrationType(req.getVibrationType());
@@ -79,12 +82,38 @@ public class SoundSettingServiceImpl implements SoundSettingService {
 
     @Override
     public void updateDefaultAlarm(User user, SoundAlarmUpdateReq req) {
-        throw new UnsupportedOperationException("DEFAULT 사운드는 아직 미구현입니다.");
+        // 1) 기본 사운드 검증
+        BasicSound basicSound = basicSoundRepository.findById(req.getSoundId())
+                .orElseThrow(NotFoundSoundException::new);
+
+        // 2) 설정 조회 or 생성
+        SoundSetting setting = soundSettingRepository
+                .findByUserUserIdAndBasicSoundId(user.getUserId(), basicSound.getId())
+                .orElseGet(() -> SoundSetting.createForBasic(user, basicSound));
+
+        // 3) 알람 반영
+        setting.changeAlarmEnabled(req.isAlarmEnabled());
+
+        // 4) 저장
+        soundSettingRepository.save(setting);
     }
 
     @Override
     public void updateDefaultVibration(User user, SoundVibrationUpdateReq req) {
-        throw new UnsupportedOperationException("DEFAULT 사운드는 아직 미구현입니다.");
+        // 1) 기본 사운드 검증
+        BasicSound basicSound = basicSoundRepository.findById(req.getSoundId())
+                .orElseThrow(NotFoundSoundException::new);
+
+        // 2) 설정 조회 or 생성
+        SoundSetting setting = soundSettingRepository
+                .findByUserUserIdAndBasicSoundId(user.getUserId(), basicSound.getId())
+                .orElseGet(() -> SoundSetting.createForBasic(user, basicSound));
+
+        // 3) 진동 종류 반영 (1~5)
+        setting.changeVibrationType(req.getVibrationType());
+
+        // 4) 저장
+        soundSettingRepository.save(setting);
     }
 
 }

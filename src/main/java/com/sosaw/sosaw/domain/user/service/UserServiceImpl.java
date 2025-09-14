@@ -1,5 +1,9 @@
 package com.sosaw.sosaw.domain.user.service;
 
+import com.sosaw.sosaw.domain.basicsound.entity.BasicSound;
+import com.sosaw.sosaw.domain.basicsound.repository.BasicSoundRepository;
+import com.sosaw.sosaw.domain.soundsetting.entity.SoundSetting;
+import com.sosaw.sosaw.domain.soundsetting.repository.SoundSettingRepository;
 import com.sosaw.sosaw.domain.user.entity.User;
 import com.sosaw.sosaw.domain.user.exception.PasswordMismatchException;
 import com.sosaw.sosaw.domain.user.exception.UserAlreadyExistException;
@@ -14,11 +18,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final BasicSoundRepository basicSoundRepository;
+    private final SoundSettingRepository soundSettingRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -39,6 +47,13 @@ public class UserServiceImpl implements UserService {
 
         // Repository에 User 저장
         userRepository.save(user);
+
+        // 기본 사운드 세팅 생성
+        List<BasicSound> basics = basicSoundRepository.findAll();
+        for (BasicSound basic : basics) {
+            SoundSetting setting = SoundSetting.createForBasic(user, basic);
+            soundSettingRepository.save(setting);
+        }
     }
 
     // 회원가입시, 아이디 중복 확인
