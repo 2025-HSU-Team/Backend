@@ -1,4 +1,4 @@
-package com.sosaw.sosaw.domain.customsound.web.dto;
+package com.sosaw.sosaw.domain.customsound.repository.projection;
 
 import com.sosaw.sosaw.domain.customsound.entity.enums.Color;
 

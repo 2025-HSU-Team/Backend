@@ -1,7 +1,7 @@
 package com.sosaw.sosaw.domain.customsound.repository;
 
 import com.sosaw.sosaw.domain.customsound.entity.CustomSound;
-import com.sosaw.sosaw.domain.customsound.web.dto.SoundMatchRow;
+import com.sosaw.sosaw.domain.customsound.repository.projection.SoundMatchRow;
 import com.sosaw.sosaw.domain.customsound.web.dto.SoundsRes;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

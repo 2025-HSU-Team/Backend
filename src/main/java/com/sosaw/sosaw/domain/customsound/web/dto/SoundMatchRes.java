@@ -1,6 +1,7 @@
 package com.sosaw.sosaw.domain.customsound.web.dto;
 
 import com.sosaw.sosaw.domain.customsound.entity.enums.Color;
+import com.sosaw.sosaw.domain.customsound.repository.projection.SoundMatchRow;
 
 public record SoundMatchRes(
         String soundName,

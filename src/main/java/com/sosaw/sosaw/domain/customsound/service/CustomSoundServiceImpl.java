@@ -1,17 +1,14 @@
 package com.sosaw.sosaw.domain.customsound.service;
 
 import com.sosaw.sosaw.domain.customsound.entity.CustomSound;
-import com.sosaw.sosaw.domain.customsound.exception.FileProcessFailedException;
 import com.sosaw.sosaw.domain.customsound.exception.NotFoundSoundException;
-import com.sosaw.sosaw.domain.customsound.exception.UnsupportedExtensionException;
 import com.sosaw.sosaw.domain.customsound.port.AudioFeatureExtractor;
 import com.sosaw.sosaw.domain.customsound.repository.CustomSoundRepository;
 import com.sosaw.sosaw.domain.customsound.web.dto.SoundMatchRes;
-import com.sosaw.sosaw.domain.customsound.web.dto.SoundMatchRow;
+import com.sosaw.sosaw.domain.customsound.repository.projection.SoundMatchRow;
 import com.sosaw.sosaw.domain.customsound.web.dto.SoundUploadReq;
 import com.sosaw.sosaw.domain.customsound.web.dto.SoundsRes;
 import com.sosaw.sosaw.domain.soundsetting.entity.SoundSetting;
-import com.sosaw.sosaw.domain.soundsetting.entity.enums.SoundKind;
 import com.sosaw.sosaw.domain.soundsetting.repository.SoundSettingRepository;
 import com.sosaw.sosaw.domain.user.entity.User;
 import com.sosaw.sosaw.domain.user.repository.UserRepository;
