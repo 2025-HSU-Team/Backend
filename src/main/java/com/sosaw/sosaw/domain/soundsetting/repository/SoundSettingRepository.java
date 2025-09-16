@@ -4,6 +4,7 @@ import com.sosaw.sosaw.domain.soundsetting.entity.SoundSetting;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -15,4 +16,5 @@ public interface SoundSettingRepository extends JpaRepository<SoundSetting, Long
     Optional<SoundSetting> findByUserUserIdAndCustomSoundId(Long userId, Long customId);
     Optional<SoundSetting> findByUserUserIdAndBasicSoundId(Long userId, Long basicId);
 
+    List<SoundSetting> findByUserUserId(Long userId);
 }
