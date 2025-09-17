@@ -1,7 +1,11 @@
 package com.sosaw.sosaw.domain.customsound.service;
 
+import com.sosaw.sosaw.domain.basicsound.entity.BasicSound;
+import com.sosaw.sosaw.domain.basicsound.entity.enums.BasicSoundType;
+import com.sosaw.sosaw.domain.basicsound.exception.NotFoundBasicSoundException;
+import com.sosaw.sosaw.domain.basicsound.repository.BasicSoundRepository;
 import com.sosaw.sosaw.domain.customsound.entity.CustomSound;
-import com.sosaw.sosaw.domain.customsound.exception.NotFoundSoundException;
+import com.sosaw.sosaw.domain.customsound.exception.NotFoundCustomSoundException;
 import com.sosaw.sosaw.domain.customsound.port.AudioFeatureExtractor;
 import com.sosaw.sosaw.domain.customsound.repository.CustomSoundRepository;
 import com.sosaw.sosaw.domain.customsound.web.dto.SoundMatchRes;
@@ -32,6 +36,7 @@ public class CustomSoundServiceImpl implements CustomSoundService{
     private final AudioFeatureExtractor audioFeatureExtractor; // 포트 주입
     private final SoundSettingRepository soundSettingRepository;
     private final UserRepository userRepository;
+    private final BasicSoundRepository basicSoundRepository;
 
 
     @Override
@@ -54,7 +59,7 @@ public class CustomSoundServiceImpl implements CustomSoundService{
     public void delete(Long customSoundId) {
         customSoundRepository.findById(customSoundId).ifPresentOrElse(
                 customSoundRepository::delete,
-                () -> { throw new NotFoundSoundException(); }
+                () -> { throw new NotFoundCustomSoundException(); }
         );
     }
 
@@ -71,7 +76,7 @@ public class CustomSoundServiceImpl implements CustomSoundService{
     @Transactional
     public void modify(SoundUploadReq req, Long customSoundId) {
         CustomSound sound = customSoundRepository.findById(customSoundId)
-                .orElseThrow(NotFoundSoundException::new);
+                .orElseThrow(NotFoundCustomSoundException::new);
         float[] mfcc = audioFeatureExtractor.extractMfcc(req.getFile());
         sound.replace(req, mfcc);
     }
@@ -86,11 +91,34 @@ public class CustomSoundServiceImpl implements CustomSoundService{
         String literal = FloatArrayVectorConverter.toLiteral(mfcc);
 
         SoundMatchRow row = customSoundRepository
-                .findTopMatchByUserIdWithSimilarity(user.getUserId(), literal)
-                .orElseThrow(NotFoundSoundException::new);
-        //TODO: 일상생활 소리 탐지와 사용자 소리 어떤 것을 반환할지, 단일 컷 정확도 기준 필요
-        // 일상생활 소리 탐지 부분에서 서비스에서 재공되는 9개의 소리가 아닌 다른 소리 분류시 제외 시켜야 함.
-        return SoundMatchRes.from(row);
+                .findTopMatchByUserIdWithSimilarity(user.getUserId(), literal);
+
+        log.info("커스텀 소리 유사도: {}", row.getSimilarity());
+
+        //1. 커스텀 유사도
+        if (row != null && row.getSimilarity() >= 0.997) {
+            return SoundMatchRes.from(row);
+        }
+
+        //2. tf모델 예측
+        String label = audioFeatureExtractor.predict(file);
+
+        log.info("매핑된 사운드 종류 : {}", label);
+
+        BasicSoundType sound = BasicSoundType.fromLabel(label);
+
+        //커스텀 유사도가 낮고 tf에서도 예측불가능
+        if (sound == BasicSoundType.UNKNOWN) {
+            return SoundMatchRes.unknown();
+        }
+
+        BasicSound basicSound = basicSoundRepository.findBySoundType(sound)
+                .orElseThrow(NotFoundBasicSoundException::new);
+
+        SoundSetting setting = soundSettingRepository.findByUserUserIdAndBasicSound(user.getUserId(), basicSound)
+                .orElse(SoundSetting.createForBasic(user, basicSound));
+
+        return SoundMatchRes.fromBasicSound(sound, setting);
     }
 
 }

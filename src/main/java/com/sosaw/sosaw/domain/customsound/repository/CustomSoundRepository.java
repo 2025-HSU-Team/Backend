@@ -42,7 +42,7 @@ public interface CustomSoundRepository extends JpaRepository<CustomSound, Long> 
         ORDER BY c.mfcc <=> (:mfcc)::vector ASC
         LIMIT 1
     """, nativeQuery = true)
-    Optional<SoundMatchRow> findTopMatchByUserIdWithSimilarity(
+    SoundMatchRow findTopMatchByUserIdWithSimilarity(
             @Param("userId") Long userId,
             @Param("mfcc") String mfccVectorLiteral   // "[0.12, -0.03, ...]" 형태의 문자열
     );

@@ -22,20 +22,34 @@ public class FastApiMfccExtractor implements AudioFeatureExtractor {
 
     @Override
     public float[] extractMfcc(MultipartFile file) {
-        validateWav(file);
-
-        Path tmp = null;
+        Path tmp = saveTempFile(file);
         try {
-            tmp = Files.createTempFile("wav-", ".wav");
-            file.transferTo(tmp.toFile());
-
             List<Double> vec = pythonMFCCService.extractMFCC(tmp);
             return toFloatArray(vec, MFCC_DIM);
-
-        } catch (IOException e) {
-            throw new FileProcessFailedException();
         } finally {
             safeDelete(tmp);
+        }
+    }
+
+    @Override
+    public String predict(MultipartFile file) {
+        Path tmp = saveTempFile(file);
+        try {
+            return pythonMFCCService.predict(tmp);
+        } finally {
+            safeDelete(tmp);
+        }
+    }
+
+    private Path saveTempFile(MultipartFile file) {
+        validateWav(file);
+        try {
+            byte[] data = file.getBytes();
+            Path tmp = Files.createTempFile("wav-", ".wav");
+            Files.write(tmp, data);
+            return tmp;
+        } catch (IOException e) {
+            throw new FileProcessFailedException();
         }
     }
 
