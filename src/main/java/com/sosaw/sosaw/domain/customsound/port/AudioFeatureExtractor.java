@@ -4,4 +4,5 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface AudioFeatureExtractor {
     float[] extractMfcc(MultipartFile file);
+    String predict(MultipartFile file);
 }

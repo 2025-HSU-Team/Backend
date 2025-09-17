@@ -1,5 +1,6 @@
 package com.sosaw.sosaw.domain.soundsetting.repository;
 
+import com.sosaw.sosaw.domain.basicsound.entity.BasicSound;
 import com.sosaw.sosaw.domain.soundsetting.entity.SoundSetting;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -17,4 +18,6 @@ public interface SoundSettingRepository extends JpaRepository<SoundSetting, Long
     Optional<SoundSetting> findByUserUserIdAndBasicSoundId(Long userId, Long basicId);
 
     List<SoundSetting> findByUserUserId(Long userId);
+
+    Optional<SoundSetting> findByUserUserIdAndBasicSound(Long userId, BasicSound basicSound);
 }
