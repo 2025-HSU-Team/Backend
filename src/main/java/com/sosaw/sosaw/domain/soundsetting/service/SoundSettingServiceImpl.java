@@ -2,17 +2,22 @@ package com.sosaw.sosaw.domain.soundsetting.service;
 
 import com.sosaw.sosaw.domain.basicsound.entity.BasicSound;
 import com.sosaw.sosaw.domain.basicsound.repository.BasicSoundRepository;
-import com.sosaw.sosaw.domain.customsound.exception.NotFoundSoundException;
+import com.sosaw.sosaw.domain.customsound.exception.NotFoundCustomSoundException;
 import com.sosaw.sosaw.domain.customsound.entity.CustomSound;
 import com.sosaw.sosaw.domain.customsound.repository.CustomSoundRepository;
 import com.sosaw.sosaw.domain.soundsetting.entity.SoundSetting;
 import com.sosaw.sosaw.domain.soundsetting.repository.SoundSettingRepository;
 import com.sosaw.sosaw.domain.soundsetting.web.dto.SoundAlarmUpdateReq;
+import com.sosaw.sosaw.domain.soundsetting.web.dto.SoundSettingRes;
 import com.sosaw.sosaw.domain.soundsetting.web.dto.SoundVibrationUpdateReq;
 import com.sosaw.sosaw.domain.user.entity.User;
+import com.sosaw.sosaw.domain.user.exception.UserNotFoundException;
+import com.sosaw.sosaw.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +26,40 @@ public class SoundSettingServiceImpl implements SoundSettingService {
     private final BasicSoundRepository basicSoundRepository;
     private final CustomSoundRepository customSoundRepository;
     private final SoundSettingRepository soundSettingRepository;
+    private final UserRepository userRepository;
+
+    @Override
+    @Transactional
+    public List<SoundSettingRes> getAllSoundSetting(User user) {
+        userRepository.findById(user.getUserId())
+                .orElseThrow(UserNotFoundException::new);
+
+        //모든 사운드 설정 조회
+        List<SoundSetting> settings = soundSettingRepository.findByUserUserId(user.getUserId());
+
+        //기본 사운드 설정 조회
+        List<BasicSound> basicSounds = basicSoundRepository.findAll();
+
+        //기본 사운드 존재 확인
+        for(BasicSound basicSound : basicSounds) {
+            boolean exists = false;
+            for(SoundSetting setting : settings) {
+                if(setting.getBasicSound() != null &&
+                setting.getBasicSound().getId().equals(basicSound.getId())) {
+                    exists = true;
+                    break;
+                }
+            }
+            if(!exists) {
+                SoundSetting newSetting = SoundSetting.createForBasic(user, basicSound);
+                soundSettingRepository.save(newSetting);
+                settings.add(newSetting);
+            }
+        }
+
+
+        return settings.stream().map(SoundSettingRes::from).toList();
+    }
 
     @Override
     @Transactional
@@ -46,7 +85,7 @@ public class SoundSettingServiceImpl implements SoundSettingService {
         // 1) 내 커스텀 사운드인지 검증
         CustomSound customSound = customSoundRepository
                 .findByIdAndUserUserId(req.getSoundId(), user.getUserId())
-                .orElseThrow(NotFoundSoundException::new);
+                .orElseThrow(NotFoundCustomSoundException::new);
 
         // 2) 설정 조회 or 생성
         SoundSetting setting = soundSettingRepository
@@ -66,7 +105,7 @@ public class SoundSettingServiceImpl implements SoundSettingService {
         // 1) 내 커스텀 사운드인지 검증
         CustomSound customSound = customSoundRepository
                 .findByIdAndUserUserId(req.getSoundId(), user.getUserId())
-                .orElseThrow(NotFoundSoundException::new);
+                .orElseThrow(NotFoundCustomSoundException::new);
 
         // 2) 설정 조회 or 생성
         SoundSetting setting = soundSettingRepository
@@ -84,7 +123,7 @@ public class SoundSettingServiceImpl implements SoundSettingService {
     public void updateDefaultAlarm(User user, SoundAlarmUpdateReq req) {
         // 1) 기본 사운드 검증
         BasicSound basicSound = basicSoundRepository.findById(req.getSoundId())
-                .orElseThrow(NotFoundSoundException::new);
+                .orElseThrow(NotFoundCustomSoundException::new);
 
         // 2) 설정 조회 or 생성
         SoundSetting setting = soundSettingRepository
@@ -102,7 +141,7 @@ public class SoundSettingServiceImpl implements SoundSettingService {
     public void updateDefaultVibration(User user, SoundVibrationUpdateReq req) {
         // 1) 기본 사운드 검증
         BasicSound basicSound = basicSoundRepository.findById(req.getSoundId())
-                .orElseThrow(NotFoundSoundException::new);
+                .orElseThrow(NotFoundCustomSoundException::new);
 
         // 2) 설정 조회 or 생성
         SoundSetting setting = soundSettingRepository

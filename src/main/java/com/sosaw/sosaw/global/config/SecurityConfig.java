@@ -44,7 +44,7 @@ public class SecurityConfig {
 
                 // 인가 정책 설정
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/users/signup", "/api/users/signin", "/api/users/signup/checkId","/api/sound/upload").permitAll() //누구나 접근 가능
+                        .requestMatchers("/api/users/signup", "/api/users/signin", "/api/users/signup/checkId","/api/sound/match").permitAll() //누구나 접근 가능
                         .requestMatchers("/api/users/profile").hasRole("ADMIN") // ADMIN 역할 가진 사용자만 접근 가능
                         .requestMatchers("/static/js/**","/static/css/**","/static/img/**"
                                 ,"/swagger-ui/**","/v3/api-docs/**").permitAll() // swagger
