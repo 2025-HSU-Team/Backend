@@ -93,7 +93,11 @@ public class CustomSoundServiceImpl implements CustomSoundService{
         SoundMatchRow row = customSoundRepository
                 .findTopMatchByUserIdWithSimilarity(user.getUserId(), literal);
 
-        log.info("커스텀 소리 유사도: {}", row.getSimilarity());
+        if (row == null) {
+            log.info("커스텀 소리 매칭 결과 없음");
+        } else {
+            log.info("커스텀 소리 유사도: {}", row.getSimilarity());
+        }
 
         //1. 커스텀 유사도
         if (row != null && row.getSimilarity() >= 0.997) {
