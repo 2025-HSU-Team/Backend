@@ -6,6 +6,7 @@ import com.sosaw.sosaw.domain.soundsetting.entity.enums.SoundKind;
 
 public record SoundSettingRes(
         Long soundId,
+        SoundKind soundKind,
         String soundName,
         String emoji,
         Color color,
@@ -16,6 +17,7 @@ public record SoundSettingRes(
     public static SoundSettingRes from(SoundSetting setting) {
         return new SoundSettingRes(
                 setting.getId(),
+                setting.getSoundKind(),
                 setting.getSoundKind() == SoundKind.DEFAULT
                         ? setting.getBasicSound().getSoundType().toString()
                         : setting.getCustomSound().getCustomName(),
