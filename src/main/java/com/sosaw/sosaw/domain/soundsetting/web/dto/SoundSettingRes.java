@@ -16,7 +16,9 @@ public record SoundSettingRes(
 ) {
     public static SoundSettingRes from(SoundSetting setting) {
         return new SoundSettingRes(
-                setting.getId(),
+                setting.getSoundKind() == SoundKind.DEFAULT
+                        ? setting.getBasicSound().getId()
+                        : setting.getCustomSound().getId(),
                 setting.getSoundKind(),
                 setting.getSoundKind() == SoundKind.DEFAULT
                         ? setting.getBasicSound().getSoundType().toString()
