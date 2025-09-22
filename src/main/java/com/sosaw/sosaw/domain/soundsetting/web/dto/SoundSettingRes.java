@@ -11,7 +11,7 @@ public record SoundSettingRes(
         String emoji,
         Color color,
         boolean alarmEnabled,
-        int vibrationLevel
+        int vibrationType
 
 ) {
     public static SoundSettingRes from(SoundSetting setting) {
