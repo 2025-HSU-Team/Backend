@@ -26,7 +26,7 @@ public record SoundMatchRes(
 
     public static SoundMatchRes fromBasicSound(BasicSoundType sound, SoundSetting setting) {
         return new SoundMatchRes(
-                sound.getLabel(),
+                sound.name(),
                 null,
                 null,
                 -1.0,
